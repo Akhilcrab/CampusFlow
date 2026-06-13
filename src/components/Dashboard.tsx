@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { ExtractedItemWithReminders, DashboardStats } from '@/types';
 import FileUpload from './FileUpload';
 import StatCards from './StatCards';
@@ -79,6 +80,15 @@ export default function Dashboard() {
 
   useEffect(() => {
     fetchItems();
+    
+    // Read the "tab" query parameter from URL to set the active navigation view
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const tab = params.get('tab');
+      if (tab && ['dashboard', 'inbox', 'placements', 'assignments'].includes(tab)) {
+        setActiveNav(tab as any);
+      }
+    }
   }, []);
 
   const handleItemExtracted = () => {
@@ -186,6 +196,12 @@ export default function Dashboard() {
               {tab.label}
             </button>
           ))}
+          <Link
+            href="/attendance"
+            className="text-xs font-bold px-4 py-2 rounded-[16px] transition-all cursor-pointer text-[#6B7280] hover:text-[#111827] hover:bg-slate-50 flex items-center gap-1"
+          >
+            📊 Attendance
+          </Link>
         </nav>
 
         {/* Live Alerts Status Info */}
