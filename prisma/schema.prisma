@@ -1,0 +1,100 @@
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Category {
+  ASSIGNMENT
+  EXAM
+  EVENT
+  PLACEMENT
+  NOTICE
+  OTHER
+}
+
+enum Priority {
+  CRITICAL
+  HIGH
+  MEDIUM
+  LOW
+}
+
+model User {
+  id            String          @id @default(auto()) @map("_id") @db.ObjectId
+  name          String
+  email         String          @unique
+  passwordHash  String
+  role          String          @default("STUDENT") // "STUDENT" | "ADMIN"
+  branch        String?
+  year          String?
+  semester      String?
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  uploads       Upload[]
+  items         ExtractedItem[]
+  preferences   UserPreferences?
+  notifications Notification[]
+}
+
+model Upload {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId     String   @db.ObjectId
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  fileName   String
+  uploadType String   // "whatsapp" | "screenshot"
+  uploadDate DateTime @default(now())
+}
+
+model UserPreferences {
+  id                    String  @id @default(auto()) @map("_id") @db.ObjectId
+  userId                String  @unique @db.ObjectId
+  user                  User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  assignmentReminders   Boolean @default(true)
+  placementAlerts       Boolean @default(true)
+  examAlerts            Boolean @default(true)
+  eventNotifications    Boolean @default(true)
+  preferredReminderLead Int     @default(60) // minutes before deadline
+}
+
+model Notification {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String   @db.ObjectId
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  message   String
+  status    String   @default("UNREAD") // "UNREAD" | "READ"
+  timestamp DateTime @default(now())
+}
+
+model ExtractedItem {
+  id             String     @id @default(auto()) @map("_id") @db.ObjectId
+  userId         String?    @db.ObjectId // Optional to prevent seed data migration crash, but set on user items
+  user           User?      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title          String
+  category       Category
+  summary        String
+  date           String?
+  time           String?
+  deadline       DateTime?
+  priority       Priority
+  sourceType     String
+  sourceName     String?
+  actionRequired String?
+  isCompleted    Boolean    @default(false)
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+  reminders      Reminder[]
+}
+
+model Reminder {
+  id              String        @id @default(auto()) @map("_id") @db.ObjectId
+  itemId          String        @db.ObjectId
+  item            ExtractedItem @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  reminderTime    DateTime
+  isTriggered     Boolean       @default(false)
+  isDismissed     Boolean       @default(false)
+  createdAt       DateTime      @default(now())
+}
