@@ -139,10 +139,10 @@ export default function FileUpload({ onItemExtracted }: FileUploadProps) {
   return (
     <div className="w-full">
       <div
-        className={`relative bg-white rounded-[24px] p-8 border-dashed border-2 flex flex-col items-center justify-center text-center cursor-pointer transition-all duration-200 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.04)] ${
+        className={`relative bg-white dark:bg-slate-900 rounded-[24px] p-8 border-dashed border-2 flex flex-col items-center justify-center text-center cursor-pointer transition-all duration-200 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.04)] ${
           isDragActive 
             ? 'border-[#1677FF] bg-blue-50/50 scale-[1.01]' 
-            : 'border-gray-200 hover:border-[#1677FF]/60 bg-white'
+            : 'border-gray-200 dark:border-slate-800 hover:border-[#1677FF]/60 bg-white dark:bg-slate-900'
         } ${loading ? 'pointer-events-none' : ''}`}
         onDragEnter={handleDrag}
         onDragOver={handleDrag}
@@ -162,11 +162,11 @@ export default function FileUpload({ onItemExtracted }: FileUploadProps) {
         {loading ? (
           <div className="flex flex-col items-center justify-center py-4">
             <Loader2 className="w-12 h-12 text-[#1677FF] animate-spin mb-4" />
-            <p className="font-bold text-[#111827] text-sm">{statusText}</p>
-            <p className="text-xs text-[#6B7280] mt-1">Please keep this window open</p>
+            <p className="font-bold text-[#111827] dark:text-slate-100 text-sm">{statusText}</p>
+            <p className="text-xs text-[#6B7280] dark:text-gray-400 mt-1">Please keep this window open</p>
             
             {/* Custom progress bar */}
-            <div className="w-64 bg-gray-100 h-2 rounded-full mt-4 overflow-hidden border border-gray-200">
+            <div className="w-64 bg-gray-100 dark:bg-slate-850 h-2 rounded-full mt-4 overflow-hidden border border-gray-200 dark:border-slate-850">
               <div 
                 className="bg-[#1677FF] h-full rounded-full transition-all duration-300"
                 style={{ width: `${progress}%` }}
@@ -175,17 +175,17 @@ export default function FileUpload({ onItemExtracted }: FileUploadProps) {
           </div>
         ) : (
           <div className="flex flex-col items-center justify-center py-4">
-            <div className="w-16 h-16 rounded-[16px] bg-slate-50 border border-slate-100 flex items-center justify-center mb-4 text-[#1677FF] transition-transform">
+            <div className="w-16 h-16 rounded-[16px] bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 flex items-center justify-center mb-4 text-[#1677FF] transition-transform">
               <Upload className="w-8 h-8" />
             </div>
-            <p className="font-bold text-base text-[#111827]">
+            <p className="font-bold text-base text-[#111827] dark:text-slate-100">
               Upload Screenshot or Text Log
             </p>
-            <p className="text-xs text-[#6B7280] mt-2 max-w-sm leading-relaxed">
-              Drag & drop files here, or click to browse. Supports WhatsApp chat <code className="text-[#1677FF] bg-blue-50 px-1 py-0.5 rounded text-[10px] font-bold">.txt</code> exports and dashboard images.
+            <p className="text-xs text-[#6B7280] dark:text-gray-400 mt-2 max-w-sm leading-relaxed">
+              Drag & drop files here, or click to browse. Supports WhatsApp chat <code className="text-[#1677FF] bg-blue-50 dark:bg-blue-950/30 px-1 py-0.5 rounded text-[10px] font-bold">.txt</code> exports and dashboard images.
             </p>
             
-            <div className="flex items-center gap-6 mt-6 text-xs text-[#6B7280]">
+            <div className="flex items-center gap-6 mt-6 text-xs text-[#6B7280] dark:text-gray-400">
               <span className="flex items-center gap-1.5 font-semibold">
                 <FileText className="w-4 h-4 text-[#22C55E]" /> WhatsApp Logs
               </span>

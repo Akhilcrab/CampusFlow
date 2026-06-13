@@ -84,6 +84,9 @@ model ExtractedItem {
   sourceName     String?
   actionRequired String?
   isCompleted    Boolean    @default(false)
+  isStarred      Boolean    @default(false)
+  userPriority   Priority?
+  priorityExplanation String?
   createdAt      DateTime   @default(now())
   updatedAt      DateTime   @updatedAt
   reminders      Reminder[]

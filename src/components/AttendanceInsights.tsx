@@ -80,10 +80,10 @@ export default function AttendanceInsights({ subjects, targetPercent }: Attendan
   }
 
   return (
-    <div className="relative overflow-hidden bg-gradient-to-br from-[#EFF6FF] via-[#F5F3FF] to-[#FAF5FF] border border-[#E8E2FA] rounded-[24px] p-6 shadow-[0_4px_20px_rgba(139,92,246,0.06),0_1px_2px_rgba(0,0,0,0.02)] w-full">
+    <div className="relative overflow-hidden bg-gradient-to-br from-[#EFF6FF] via-[#F5F3FF] to-[#FAF5FF] dark:from-[#0B1528] dark:via-[#130E29] dark:to-[#170E2B] border border-[#E8E2FA] dark:border-[#2C2151] rounded-[24px] p-6 shadow-[0_4px_20px_rgba(139,92,246,0.06),0_1px_2px_rgba(0,0,0,0.02)] w-full">
       {/* Background soft glow decoration */}
-      <div className="absolute -right-10 -top-10 w-28 h-28 bg-[#8B5CF6]/5 rounded-full blur-xl pointer-events-none" />
-      <div className="absolute -left-10 -bottom-10 w-28 h-28 bg-[#1677FF]/5 rounded-full blur-xl pointer-events-none" />
+      <div className="absolute -right-10 -top-10 w-28 h-28 bg-[#8B5CF6]/5 dark:bg-[#8B5CF6]/10 rounded-full blur-xl pointer-events-none" />
+      <div className="absolute -left-10 -bottom-10 w-28 h-28 bg-[#1677FF]/5 dark:bg-[#1677FF]/10 rounded-full blur-xl pointer-events-none" />
 
       {/* Title */}
       <div className="flex items-center gap-2 mb-4">
@@ -91,41 +91,41 @@ export default function AttendanceInsights({ subjects, targetPercent }: Attendan
           <Brain className="w-4.5 h-4.5" />
         </div>
         <div>
-          <h3 className="text-xs font-black text-[#8B5CF6] uppercase tracking-widest flex items-center gap-1">
-            CampusFlow Insight <Sparkles className="w-3 h-3 text-[#8B5CF6] animate-pulse" />
+          <h3 className="text-xs font-black text-[#8B5CF6] dark:text-purple-400 uppercase tracking-widest flex items-center gap-1 select-none">
+            CampusFlow Insight <Sparkles className="w-3 h-3 text-[#8B5CF6] dark:text-purple-400 animate-pulse" />
           </h3>
-          <span className="text-[10px] text-[#6B7280] font-semibold block">
+          <span className="text-[10px] text-[#6B7280] dark:text-gray-400 font-semibold block">
             AI-Powered Co-Pilot analysis
           </span>
         </div>
       </div>
 
       {/* Analysis Content */}
-      <p className="text-xs text-[#4B5563] leading-relaxed font-medium">
+      <p className="text-xs text-[#4B5563] dark:text-gray-300 leading-relaxed font-medium">
         {analysisText.split('**').map((chunk, index) => 
-          index % 2 === 1 ? <strong key={index} className="text-[#111827] font-bold">{chunk}</strong> : chunk
+          index % 2 === 1 ? <strong key={index} className="text-[#111827] dark:text-slate-100 font-bold">{chunk}</strong> : chunk
         )}
       </p>
 
       {/* Actionable recommendations list */}
-      <div className="mt-5 pt-4 border-t border-[#E5E7EB] border-dashed">
-        <h4 className="text-[10px] font-black text-[#6B7280] uppercase tracking-wider mb-2.5">
+      <div className="mt-5 pt-4 border-t border-[#E5E7EB] dark:border-slate-800 border-dashed">
+        <h4 className="text-[10px] font-black text-[#6B7280] dark:text-gray-400 uppercase tracking-wider mb-2.5">
           Recommended Actions
         </h4>
 
         {recommendations.length === 0 ? (
-          <div className="flex items-center gap-2 text-xs text-[#059669] font-bold">
-            <CheckCircle className="w-4 h-4" />
+          <div className="flex items-center gap-2 text-xs text-[#059669] dark:text-emerald-400 font-bold">
+            <CheckCircle className="w-4 h-4 text-emerald-500 shrink-0" />
             No immediate alerts. Keep attending all lectures!
           </div>
         ) : (
           <ul className="flex flex-col gap-2">
             {recommendations.map((rec, i) => (
-              <li key={i} className="flex gap-2 text-xs text-[#4B5563] font-medium leading-normal">
-                <span className="text-[#8B5CF6] mt-0.5 font-black">•</span>
+              <li key={i} className="flex gap-2 text-xs text-[#4B5563] dark:text-gray-300 font-medium leading-normal">
+                <span className="text-[#8B5CF6] dark:text-purple-400 mt-0.5 font-black shrink-0">•</span>
                 <span>
                   {rec.split('**').map((chunk, index) => 
-                    index % 2 === 1 ? <strong key={index} className="text-[#111827] font-bold">{chunk}</strong> : chunk
+                    index % 2 === 1 ? <strong key={index} className="text-[#111827] dark:text-slate-100 font-bold">{chunk}</strong> : chunk
                   )}
                 </span>
               </li>

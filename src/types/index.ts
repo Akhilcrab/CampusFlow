@@ -13,6 +13,9 @@ export interface ExtractedItemWithReminders {
   sourceName?: string | null;
   actionRequired?: string | null;
   isCompleted: boolean;
+  isStarred?: boolean;
+  userPriority?: Priority | null;
+  priorityExplanation?: string | null;
   createdAt: string;
   updatedAt: string;
   reminders: Reminder[];

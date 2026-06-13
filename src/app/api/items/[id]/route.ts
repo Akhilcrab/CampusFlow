@@ -11,6 +11,24 @@ export async function PUT(req: NextRequest, { params }: RouteParams) {
     const { id } = await params;
     const body = await req.json();
 
+    // Route reminder status updates (isTriggered/isDismissed) to the Reminder model
+    if (body.reminderId) {
+      await db.reminder.update({
+        where: { id: body.reminderId },
+        data: {
+          isTriggered: body.isTriggered !== undefined ? body.isTriggered : undefined,
+          isDismissed: body.isDismissed !== undefined ? body.isDismissed : undefined,
+        },
+      });
+      const updatedItem = await db.extractedItem.findUnique({
+        where: { id },
+        include: {
+          reminders: true,
+        },
+      });
+      return NextResponse.json({ success: true, data: updatedItem });
+    }
+
     // Directly update the item by ID without tenant validation
     const updatedItem = await db.extractedItem.update({
       where: { id },

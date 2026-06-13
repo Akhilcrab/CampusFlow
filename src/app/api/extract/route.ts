@@ -49,31 +49,29 @@ export async function POST(req: NextRequest) {
     const remindersData = [];
 
     // 1. Immediate Demo reminder (15 seconds from now)
-    // This allows the user/judge to experience the browser notification popup immediately during a live demo
     const demoTime = new Date(Date.now() + 15 * 1000);
     if (demoTime < deadline) {
       remindersData.push({ reminderTime: demoTime });
     }
 
-    // 2. Standard warning reminders based on priority
-    if (priority === 'CRITICAL' || priority === 'HIGH') {
-      const oneHourBefore = new Date(deadline.getTime() - 60 * 60 * 1000);
-      if (oneHourBefore > now && Math.abs(oneHourBefore.getTime() - demoTime.getTime()) > 30000) {
-        remindersData.push({ reminderTime: oneHourBefore });
-      }
-    } else if (priority === 'MEDIUM') {
-      const oneDayBefore = new Date(deadline.getTime() - 24 * 60 * 60 * 1000);
-      if (oneDayBefore > now) {
-        remindersData.push({ reminderTime: oneDayBefore });
-      }
-    } else if (priority === 'LOW') {
-      const twoDaysBefore = new Date(deadline.getTime() - 2 * 24 * 60 * 60 * 1000);
-      const oneDayBefore = new Date(deadline.getTime() - 24 * 60 * 60 * 1000);
-      if (twoDaysBefore > now) {
-        remindersData.push({ reminderTime: twoDaysBefore });
-      }
-      if (oneDayBefore > now && oneDayBefore > twoDaysBefore) {
-        remindersData.push({ reminderTime: oneDayBefore });
+    // 2. Standard multi-stage reminders based on category rules
+    let offsets: number[] = [];
+    if (result.category === 'ASSIGNMENT') {
+      offsets = [12, 3, 1];
+    } else if (result.category === 'EXAM') {
+      offsets = [24, 12, 3, 1];
+    } else if (result.category === 'PLACEMENT') {
+      offsets = [48, 24, 12];
+    } else if (result.category === 'EVENT') {
+      offsets = [24, 3];
+    } else {
+      offsets = [24, 1];
+    }
+
+    for (const h of offsets) {
+      const rTime = new Date(deadline.getTime() - h * 60 * 60 * 1000);
+      if (rTime > now && Math.abs(rTime.getTime() - demoTime.getTime()) > 30000) {
+        remindersData.push({ reminderTime: rTime });
       }
     }
 

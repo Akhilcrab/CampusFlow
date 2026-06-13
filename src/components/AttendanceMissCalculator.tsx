@@ -24,7 +24,6 @@ export default function AttendanceMissCalculator({
     
     if (currentPercent < target) return 0;
     
-    // Solve: present / (total + m) >= t => present >= t * (total + m) => present / t - total >= m
     const m = Math.floor(present / t - total);
     return Math.max(0, m);
   };
@@ -33,40 +32,40 @@ export default function AttendanceMissCalculator({
     if (currentPercent < target) {
       return {
         label: 'Must Attend',
-        colorClass: 'bg-[#FEF2F2] text-[#EF4444] border-[#FEE2E2]',
+        colorClass: 'bg-[#FEF2F2] dark:bg-red-950/20 text-[#EF4444] dark:text-red-400 border-[#FEE2E2] dark:border-red-900/30',
         statusIcon: ShieldAlert
       };
     }
     if (canMiss === 0) {
       return {
         label: 'Be Careful',
-        colorClass: 'bg-[#FFFBEB] text-[#D97706] border-[#FEF3C7]',
+        colorClass: 'bg-[#FFFBEB] dark:bg-amber-950/20 text-[#D97706] dark:text-amber-400 border-[#FEF3C7] dark:border-amber-900/30',
         statusIcon: AlertCircle
       };
     }
     return {
       label: 'Safe To Miss',
-      colorClass: 'bg-[#ECFDF5] text-[#059669] border-[#A7F3D0]',
+      colorClass: 'bg-[#ECFDF5] dark:bg-emerald-950/20 text-[#059669] dark:text-emerald-450 border-[#A7F3D0] dark:border-emerald-900/30',
       statusIcon: CheckCircle2
     };
   };
 
   return (
-    <div className="cf-card bg-white border border-[#E5E7EB] rounded-[24px] p-6 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.04)] w-full flex flex-col gap-6">
+    <div className="cf-card bg-white dark:bg-slate-900 border border-[#E5E7EB] dark:border-slate-800 rounded-[24px] p-6 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.04)] w-full flex flex-col gap-6">
       <div>
-        <h3 className="text-sm font-extrabold text-[#6B7280] uppercase tracking-wider flex items-center gap-2">
-          <Sliders className="w-4 h-4 text-[#1677FF]" /> Miss Safety Limits
+        <h3 className="text-sm font-extrabold text-[#6B7280] dark:text-gray-400 uppercase tracking-wider flex items-center gap-2">
+          <Sliders className="w-4 h-4 text-[#1677FF] dark:text-blue-400" /> Miss Safety Limits
         </h3>
-        <p className="text-xs text-[#9CA3AF] mt-0.5">
+        <p className="text-xs text-[#9CA3AF] dark:text-gray-500 mt-0.5 font-medium">
           Estimate how many consecutive future classes you can safely skip.
         </p>
       </div>
 
       {/* Target Adjuster Slider */}
-      <div className="bg-slate-50 border border-[#E5E7EB] rounded-[18px] p-4 flex flex-col gap-2">
-        <div className="flex justify-between text-xs font-bold text-[#111827]">
+      <div className="bg-slate-50 dark:bg-slate-800/40 border border-[#E5E7EB] dark:border-slate-800 rounded-[18px] p-4 flex flex-col gap-2">
+        <div className="flex justify-between text-xs font-bold text-[#111827] dark:text-slate-200">
           <span>Required Threshold</span>
-          <span className="text-[#1677FF] font-black">{targetPercent}%</span>
+          <span className="text-[#1677FF] dark:text-blue-400 font-black">{targetPercent}%</span>
         </div>
         <input
           type="range"
@@ -75,9 +74,9 @@ export default function AttendanceMissCalculator({
           step="5"
           value={targetPercent}
           onChange={(e) => onChangeTarget(Number(e.target.value))}
-          className="w-full h-1 bg-[#E5E7EB] rounded-lg appearance-none cursor-pointer accent-[#1677FF] my-1.5"
+          className="w-full h-1 bg-[#E5E7EB] dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-[#1677FF] my-1.5"
         />
-        <div className="flex justify-between text-[10px] text-[#9CA3AF] font-bold">
+        <div className="flex justify-between text-[10px] text-[#9CA3AF] dark:text-gray-500 font-extrabold">
           <span>60%</span>
           <span>75% (Min ERP)</span>
           <span>90%</span>
@@ -95,28 +94,28 @@ export default function AttendanceMissCalculator({
           return (
             <div 
               key={subject.id} 
-              className="flex items-center justify-between p-3 border border-[#E5E7EB] rounded-[16px] bg-slate-50/20"
+              className="flex items-center justify-between p-3 border border-[#E5E7EB] dark:border-slate-800/60 rounded-[16px] bg-slate-50/20 dark:bg-slate-800/10"
             >
               <div className="min-w-0 flex-1">
-                <span className="text-xs font-extrabold text-[#111827] block truncate">
+                <span className="text-xs font-extrabold text-[#111827] dark:text-slate-200 block truncate">
                   {subject.name}
                 </span>
-                <span className="text-[10px] text-[#9CA3AF] font-semibold">
+                <span className="text-[10px] text-[#9CA3AF] dark:text-gray-500 font-semibold">
                   Current: {currentPercent.toFixed(0)}%
                 </span>
               </div>
 
               <div className="flex items-center gap-3">
                 <div className="text-right">
-                  <span className="text-sm font-black text-[#111827] block">
+                  <span className="text-sm font-black text-[#111827] dark:text-slate-100 block">
                     {canMiss} {canMiss === 1 ? 'Class' : 'Classes'}
                   </span>
-                  <span className="text-[9px] text-[#9CA3AF] font-bold uppercase tracking-wider block">
+                  <span className="text-[9px] text-[#9CA3AF] dark:text-gray-550 font-bold uppercase tracking-wider block">
                     Can Miss
                   </span>
                 </div>
 
-                <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-[10px] text-[10px] font-black border uppercase tracking-wider ${status.colorClass}`}>
+                <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-[10px] text-[10px] font-black border uppercase tracking-wider shrink-0 ${status.colorClass}`}>
                   <StatusIcon className="w-2.5 h-2.5" />
                   {status.label}
                 </span>

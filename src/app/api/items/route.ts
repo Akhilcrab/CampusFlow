@@ -62,6 +62,26 @@ export async function POST(req: NextRequest) {
     const mediumDeadline = new Date(now.getTime() + 2 * 24 * 60 * 60 * 1000); // 2 days from now
     const lowDeadline = new Date(now.getTime() + 5 * 24 * 60 * 60 * 1000); // 5 days from now
 
+    // Helper to generate multi-stage reminders
+    const getMultiStageReminders = (category: Category, deadline: Date) => {
+      const reminders = [{ reminderTime: new Date(now.getTime() + 15 * 1000) }]; // demo reminder (15s from now)
+      let offsets: number[] = [];
+      if (category === 'ASSIGNMENT') offsets = [12, 3, 1];
+      else if (category === 'EXAM') offsets = [24, 12, 3, 1];
+      else if (category === 'PLACEMENT') offsets = [48, 24, 12];
+      else if (category === 'EVENT') offsets = [24, 3];
+
+      for (const h of offsets) {
+        const rTime = new Date(deadline.getTime() - h * 60 * 60 * 1000);
+        if (rTime > now && Math.abs(rTime.getTime() - reminders[0].reminderTime.getTime()) > 30000) {
+          reminders.push({ reminderTime: rTime });
+        }
+      }
+      return {
+        create: reminders.map(r => ({ reminderTime: r.reminderTime }))
+      };
+    };
+
     const mockItems = [
       {
         title: 'OS Lab Assignment 4',
@@ -74,12 +94,8 @@ export async function POST(req: NextRequest) {
         sourceType: 'whatsapp',
         sourceName: 'OS_Class_Group.txt',
         actionRequired: 'Upload the code zip and PDF report to Google Classroom.',
-        reminders: {
-          create: [
-            { reminderTime: new Date(now.getTime() + 15 * 1000) }, // 15 seconds from now for demo
-            { reminderTime: new Date(criticalDeadline.getTime() - 60 * 60 * 1000) } // 1 hour before
-          ]
-        }
+        priorityExplanation: 'Deadline is critically close (less than 3 hours away).',
+        reminders: getMultiStageReminders(Category.ASSIGNMENT, criticalDeadline)
       },
       {
         title: 'TCS Placement Registration',
@@ -92,12 +108,8 @@ export async function POST(req: NextRequest) {
         sourceType: 'screenshot',
         sourceName: 'placement_notice.png',
         actionRequired: 'Fill details and submit application on TCS NextStep portal.',
-        reminders: {
-          create: [
-            { reminderTime: new Date(now.getTime() + 30 * 1000) }, // 30 seconds from now for demo
-            { reminderTime: new Date(highDeadline.getTime() - 2 * 60 * 60 * 1000) } // 2 hours before
-          ]
-        }
+        priorityExplanation: 'Deadline is within 24 hours.',
+        reminders: getMultiStageReminders(Category.PLACEMENT, highDeadline)
       },
       {
         title: 'HackOn Hackathon Submission',
@@ -110,11 +122,8 @@ export async function POST(req: NextRequest) {
         sourceType: 'whatsapp',
         sourceName: 'HackOn_Announcements.txt',
         actionRequired: 'Submit video walk-through URL and GitHub repo on Devfolio.',
-        reminders: {
-          create: [
-            { reminderTime: new Date(mediumDeadline.getTime() - 24 * 60 * 60 * 1000) } // 1 day before
-          ]
-        }
+        priorityExplanation: 'Deadline is within 3 days.',
+        reminders: getMultiStageReminders(Category.EVENT, mediumDeadline)
       },
       {
         title: 'Maths Mid-Semester Quiz',
@@ -127,12 +136,8 @@ export async function POST(req: NextRequest) {
         sourceType: 'whatsapp',
         sourceName: 'Class_Updates.txt',
         actionRequired: 'Prepare chapter problems and print formula sheet.',
-        reminders: {
-          create: [
-            { reminderTime: new Date(lowDeadline.getTime() - 2 * 24 * 60 * 60 * 1000) }, // 2 days before
-            { reminderTime: new Date(lowDeadline.getTime() - 24 * 60 * 60 * 1000) } // 1 day before
-          ]
-        }
+        priorityExplanation: 'Deadline is more than 3 days away.',
+        reminders: getMultiStageReminders(Category.EXAM, lowDeadline)
       }
     ];
 
