@@ -161,3 +161,24 @@ export async function POST(req: NextRequest) {
     );
   }
 }
+
+export async function DELETE(req: NextRequest) {
+  try {
+    // Delete all reminders, extractedItems, assignmentReminders, assignments, placementApplications, placements, academicCalendarEvents
+    await db.reminder.deleteMany({});
+    await db.extractedItem.deleteMany({});
+    await db.assignmentReminder.deleteMany({});
+    await db.assignment.deleteMany({});
+    await db.placementApplication.deleteMany({});
+    await db.placement.deleteMany({});
+    await db.academicCalendarEvent.deleteMany({});
+
+    return NextResponse.json({ success: true, message: 'Sandbox database reset and cleared successfully.' });
+  } catch (error: any) {
+    console.error('Reset database error:', error);
+    return NextResponse.json(
+      { success: false, error: error.message || 'An error occurred while resetting the database.' },
+      { status: 500 }
+    );
+  }
+}

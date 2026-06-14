@@ -7,13 +7,16 @@ import FileUpload from './FileUpload';
 import StatCards from './StatCards';
 import ItemCard from './ItemCard';
 import NotificationManager from './NotificationManager';
+import AssignmentsModule from './AssignmentsModule';
+import PlacementsModule from './PlacementsModule';
+import CalendarModule from './CalendarModule';
 import { Calendar, BookOpen, Layers, RefreshCw, Sun, Moon, Star } from 'lucide-react';
 import { Category, Priority } from '@prisma/client';
 import { playBellChime } from '@/lib/sound';
 
 export default function Dashboard() {
-  // Navigation tabs: 'dashboard' | 'inbox' | 'placements' | 'assignments'
-  const [activeNav, setActiveNav] = useState<'dashboard' | 'inbox' | 'placements' | 'assignments'>('dashboard');
+  // Navigation tabs: 'dashboard' | 'inbox' | 'assignments' | 'placements' | 'calendar'
+  const [activeNav, setActiveNav] = useState<'dashboard' | 'inbox' | 'assignments' | 'placements' | 'calendar'>('dashboard');
   const [items, setItems] = useState<ExtractedItemWithReminders[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [refreshing, setRefreshing] = useState<boolean>(false);
@@ -119,7 +122,7 @@ export default function Dashboard() {
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
       const tab = params.get('tab');
-      if (tab && ['dashboard', 'inbox', 'placements', 'assignments'].includes(tab)) {
+      if (tab && ['dashboard', 'inbox', 'assignments', 'placements', 'calendar'].includes(tab)) {
         setActiveNav(tab as any);
       }
     }
@@ -221,6 +224,23 @@ export default function Dashboard() {
     }
   };
 
+  const handleResetDemo = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch('/api/items', { method: 'DELETE' });
+      if (response.ok) {
+        const seedRes = await fetch('/api/items', { method: 'POST' });
+        if (seedRes.ok) {
+          await fetchItems();
+        }
+      }
+    } catch (err) {
+      console.error('Failed to reset sandbox database:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleReminderTriggered = () => {
     fetchItems();
   };
@@ -293,7 +313,8 @@ export default function Dashboard() {
             { key: 'dashboard', label: 'Dashboard' },
             { key: 'inbox', label: 'Inbox' },
             { key: 'assignments', label: 'Assignments' },
-            { key: 'placements', label: 'Placements' }
+            { key: 'placements', label: 'Placements' },
+            { key: 'calendar', label: 'Calendar' }
           ].map(tab => (
             <button
               key={tab.key}
@@ -342,7 +363,8 @@ export default function Dashboard() {
           { key: 'dashboard', label: 'Dashboard' },
           { key: 'inbox', label: 'Inbox' },
           { key: 'assignments', label: 'Assignments' },
-          { key: 'placements', label: 'Placements' }
+          { key: 'placements', label: 'Placements' },
+          { key: 'calendar', label: 'Calendar' }
         ].map(tab => (
           <button
             key={tab.key}
@@ -494,53 +516,133 @@ export default function Dashboard() {
         )}
 
         {/* 3. Metric Counter Cards */}
-        <div className="animate-fade-in-up">
-          <StatCards stats={stats} />
-        </div>
+        {(activeNav === 'dashboard' || activeNav === 'inbox') && (
+          <div className="animate-fade-in-up">
+            <StatCards stats={stats} />
+          </div>
+        )}
 
         {/* 4. Split Workspace Section Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start w-full">
-          
-          {/* Left Column: Upload Center */}
-          <div className="lg:col-span-1 flex flex-col gap-6 lg:sticky lg:top-8 animate-fade-in-up">
-            <h2 className="text-[28px] font-bold text-slate-900 dark:text-white tracking-tight font-display">
-              Upload Center
-            </h2>
-            <FileUpload onItemExtracted={handleItemExtracted} />
-          </div>
-
-          {/* Right Column: Academic Inbox Feed */}
-          <div className="lg:col-span-2 flex flex-col gap-6 animate-fade-in-up">
+        {(activeNav === 'dashboard' || activeNav === 'inbox') ? (
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start w-full">
             
-            {/* Header controls & seed buttons */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200/80 dark:border-slate-800/80 pb-4">
+            {/* Left Column: Upload Center */}
+            <div className="lg:col-span-1 flex flex-col gap-6 lg:sticky lg:top-8 animate-fade-in-up">
               <h2 className="text-[28px] font-bold text-slate-900 dark:text-white tracking-tight font-display">
-                Academic Inbox
+                Upload Center
               </h2>
-              
-              {items.length === 0 && !loading && (
-                <button
-                  onClick={handleSeedDemo}
-                  className="bg-slate-950 dark:bg-white hover:bg-slate-900 dark:hover:bg-slate-100 text-white dark:text-slate-950 text-xs font-bold px-4.5 py-2.5 rounded-full transition-all cursor-pointer shadow-sm active:scale-95"
-                >
-                  Load Sandbox Mock Data
-                </button>
-              )}
+              <FileUpload onItemExtracted={handleItemExtracted} />
             </div>
 
-            {/* Starred Tasks pinned list at top */}
-            {starredItems.length > 0 && activeNav === 'dashboard' && filterKey === 'all' && (
-              <div className="flex flex-col gap-4 p-6 bg-amber-500/[0.02] dark:bg-amber-500/[0.01] border border-amber-200/50 dark:border-amber-900/30 rounded-[28px] animate-slide-up">
-                <div className="flex items-center justify-between border-b border-amber-100 dark:border-amber-950/20 pb-2 mb-1">
-                  <h4 className="text-[12px] font-bold text-amber-600 dark:text-amber-400 uppercase tracking-widest flex items-center gap-1.5 select-none">
-                    <Star className="w-3.5 h-3.5 fill-amber-500 text-amber-500" /> Starred Tasks ({starredItems.length})
-                  </h4>
-                  <span className="text-[10px] text-amber-500/80 dark:text-amber-400/80 font-bold uppercase tracking-wider">
-                    High Priority Focus Panel
-                  </span>
+            {/* Right Column: Academic Inbox Feed */}
+            <div className="lg:col-span-2 flex flex-col gap-6 animate-fade-in-up">
+              
+              {/* Header controls & seed buttons */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200/80 dark:border-slate-800/80 pb-4">
+                <h2 className="text-[28px] font-bold text-slate-900 dark:text-white tracking-tight font-display">
+                  Academic Inbox
+                </h2>
+                
+                <div className="flex items-center gap-2">
+                  {items.length > 0 && (
+                    <button
+                      onClick={handleResetDemo}
+                      className="border border-red-200 hover:bg-red-50 dark:border-red-900/50 dark:hover:bg-red-950/20 text-red-650 dark:text-red-400 text-xs font-bold px-4 py-2.5 rounded-full transition-all cursor-pointer active:scale-95 flex items-center gap-1.5"
+                      title="Clear database and reload mock data"
+                    >
+                      🗑️ Reset Sandbox Data
+                    </button>
+                  )}
+                  {items.length === 0 && !loading && (
+                    <button
+                      onClick={handleSeedDemo}
+                      className="bg-slate-950 dark:bg-white hover:bg-slate-900 dark:hover:bg-slate-100 text-white dark:text-slate-950 text-xs font-bold px-4.5 py-2.5 rounded-full transition-all cursor-pointer shadow-sm active:scale-95"
+                    >
+                      Load Sandbox Mock Data
+                    </button>
+                  )}
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {starredItems.map((item) => (
+              </div>
+
+              {/* Starred Tasks pinned list at top */}
+              {starredItems.length > 0 && activeNav === 'dashboard' && filterKey === 'all' && (
+                <div className="flex flex-col gap-4 p-6 bg-amber-500/[0.02] dark:bg-amber-500/[0.01] border border-amber-200/50 dark:border-amber-900/30 rounded-[28px] animate-slide-up">
+                  <div className="flex items-center justify-between border-b border-amber-100 dark:border-amber-950/20 pb-2 mb-1">
+                    <h4 className="text-[12px] font-bold text-amber-600 dark:text-amber-400 uppercase tracking-widest flex items-center gap-1.5 select-none">
+                      <Star className="w-3.5 h-3.5 fill-amber-500 text-amber-500" /> Starred Tasks ({starredItems.length})
+                    </h4>
+                    <span className="text-[10px] text-amber-500/80 dark:text-amber-400/80 font-bold uppercase tracking-wider">
+                      High Priority Focus Panel
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {starredItems.map((item) => (
+                      <ItemCard
+                        key={item.id}
+                        item={item}
+                        onToggleComplete={handleToggleComplete}
+                        onDeleteItem={handleDeleteItem}
+                        onUpdatePriority={handleUpdatePriority}
+                        onToggleStar={handleToggleStar}
+                      />
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Quick Inbox Filters Panel */}
+              {items.length > 0 && (
+                <div className="flex items-center gap-1.5 overflow-x-auto py-1 scrollbar-none select-none">
+                  {[
+                    { key: 'all', label: 'All Tasks' },
+                    { key: 'ASSIGNMENT', label: 'Assignments' },
+                    { key: 'EXAM', label: 'Exams' },
+                    { key: 'PLACEMENT', label: 'Placements' },
+                    { key: 'EVENT', label: 'Events' },
+                    { key: 'starred', label: 'Starred' },
+                    { key: 'high', label: 'High Priority' }
+                  ].map(filter => (
+                    <button
+                      key={filter.key}
+                      onClick={() => setFilterKey(filter.key)}
+                      className={`text-[12px] font-semibold px-4 py-1.5 rounded-full transition-all duration-200 cursor-pointer border shrink-0 ${
+                        filterKey === filter.key
+                          ? 'bg-slate-900 border-slate-900 text-white dark:bg-white dark:border-white dark:text-slate-900 shadow-sm'
+                          : 'bg-white/60 dark:bg-slate-900/60 border-slate-200/80 dark:border-slate-800 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800'
+                      }`}
+                    >
+                      {filter.label}
+                    </button>
+                  ))}
+                </div>
+              )}
+
+              {loading ? (
+                <div className="flex flex-col items-center justify-center py-24 bg-white/60 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800/80 rounded-[28px] backdrop-blur-md">
+                  <RefreshCw className="w-6 h-6 text-slate-800 dark:text-white animate-spin mb-3" />
+                  <p className="text-slate-500 dark:text-slate-400 text-xs font-semibold">Syncing academic databases...</p>
+                </div>
+              ) : filteredItems.length === 0 ? (
+                <div className="flex flex-col items-center justify-center py-20 text-center bg-white/60 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800/80 rounded-[28px] p-8 backdrop-blur-md">
+                  <div className="w-12 h-12 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 flex items-center justify-center mb-4 text-slate-500">
+                    <BookOpen className="w-5 h-5" />
+                  </div>
+                  <h3 className="text-slate-900 dark:text-white font-bold text-base tracking-tight">No Tasks Found</h3>
+                  <p className="text-slate-450 dark:text-slate-500 text-xs mt-1.5 max-w-xs leading-relaxed font-medium">
+                    There are no items matching the selected filters. Change filters or seed mock data to check dashboard functionality.
+                  </p>
+                  {items.length === 0 && (
+                    <button
+                      onClick={handleSeedDemo}
+                      className="mt-6 bg-slate-950 dark:bg-white hover:bg-slate-900 dark:hover:bg-slate-100 text-white dark:text-slate-950 text-xs font-bold px-4 py-2.5 rounded-full transition-all"
+                    >
+                      Load Mock Academic Tasks
+                    </button>
+                  )}
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-slide-up">
+                  {filteredItems.map((item) => (
                     <ItemCard
                       key={item.id}
                       item={item}
@@ -551,75 +653,22 @@ export default function Dashboard() {
                     />
                   ))}
                 </div>
-              </div>
-            )}
-
-            {/* Quick Inbox Filters Panel */}
-            {items.length > 0 && (
-              <div className="flex items-center gap-1.5 overflow-x-auto py-1 scrollbar-none select-none">
-                {[
-                  { key: 'all', label: 'All Tasks' },
-                  { key: 'ASSIGNMENT', label: 'Assignments' },
-                  { key: 'EXAM', label: 'Exams' },
-                  { key: 'PLACEMENT', label: 'Placements' },
-                  { key: 'EVENT', label: 'Events' },
-                  { key: 'starred', label: 'Starred' },
-                  { key: 'high', label: 'High Priority' }
-                ].map(filter => (
-                  <button
-                    key={filter.key}
-                    onClick={() => setFilterKey(filter.key)}
-                    className={`text-[12px] font-semibold px-4 py-1.5 rounded-full transition-all duration-200 cursor-pointer border shrink-0 ${
-                      filterKey === filter.key
-                        ? 'bg-slate-900 border-slate-900 text-white dark:bg-white dark:border-white dark:text-slate-900 shadow-sm'
-                        : 'bg-white/60 dark:bg-slate-900/60 border-slate-200/80 dark:border-slate-800 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800'
-                    }`}
-                  >
-                    {filter.label}
-                  </button>
-                ))}
-              </div>
-            )}
-
-            {loading ? (
-              <div className="flex flex-col items-center justify-center py-24 bg-white/60 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800/80 rounded-[28px] backdrop-blur-md">
-                <RefreshCw className="w-6 h-6 text-slate-800 dark:text-white animate-spin mb-3" />
-                <p className="text-slate-500 dark:text-slate-400 text-xs font-semibold">Syncing academic databases...</p>
-              </div>
-            ) : filteredItems.length === 0 ? (
-              <div className="flex flex-col items-center justify-center py-20 text-center bg-white/60 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800/80 rounded-[28px] p-8 backdrop-blur-md">
-                <div className="w-12 h-12 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 flex items-center justify-center mb-4 text-slate-500">
-                  <BookOpen className="w-5 h-5" />
-                </div>
-                <h3 className="text-slate-900 dark:text-white font-bold text-base tracking-tight">No Tasks Found</h3>
-                <p className="text-slate-450 dark:text-slate-500 text-xs mt-1.5 max-w-xs leading-relaxed font-medium">
-                  There are no items matching the selected filters. Change filters or seed mock data to check dashboard functionality.
-                </p>
-                {items.length === 0 && (
-                  <button
-                    onClick={handleSeedDemo}
-                    className="mt-6 bg-slate-950 dark:bg-white hover:bg-slate-900 dark:hover:bg-slate-100 text-white dark:text-slate-950 text-xs font-bold px-4 py-2.5 rounded-full transition-all"
-                  >
-                    Load Mock Academic Tasks
-                  </button>
-                )}
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-slide-up">
-                {filteredItems.map((item) => (
-                  <ItemCard
-                    key={item.id}
-                    item={item}
-                    onToggleComplete={handleToggleComplete}
-                    onDeleteItem={handleDeleteItem}
-                    onUpdatePriority={handleUpdatePriority}
-                    onToggleStar={handleToggleStar}
-                  />
-                ))}
-              </div>
-            )}
+              )}
+            </div>
           </div>
-        </div>
+        ) : activeNav === 'assignments' ? (
+          <div className="w-full bg-white/60 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800/80 rounded-[28px] p-6 backdrop-blur-md animate-fade-in-up">
+            <AssignmentsModule onUpdate={fetchItems} />
+          </div>
+        ) : activeNav === 'placements' ? (
+          <div className="w-full bg-white/60 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800/80 rounded-[28px] p-6 backdrop-blur-md animate-fade-in-up">
+            <PlacementsModule onUpdate={fetchItems} />
+          </div>
+        ) : activeNav === 'calendar' ? (
+          <div className="w-full bg-white/60 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800/80 rounded-[28px] p-6 backdrop-blur-md animate-fade-in-up">
+            <CalendarModule />
+          </div>
+        ) : null}
 
       </main>
     </div>
