@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { extractAcademicDetails } from '@/lib/gemini';
+import { createAssignmentOrPlacementFromAI } from '@/lib/services';
 
 export async function POST(req: NextRequest) {
   try {
@@ -98,6 +99,14 @@ export async function POST(req: NextRequest) {
         reminders: true,
       }
     });
+
+    // Create high-fidelity assignment/placement record
+    try {
+      await createAssignmentOrPlacementFromAI(item, result);
+    } catch (err) {
+      console.error('Failed to create helper models from AI response:', err);
+    }
+
     return NextResponse.json({ success: true, data: item });
   } catch (error: any) {
     console.error('Extraction API error:', error);

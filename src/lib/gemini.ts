@@ -32,6 +32,30 @@ const responseSchema: any = {
     actionRequired: {
       type: 'string',
       description: 'Actionable next step for the student (e.g., "Submit code on portal", "Register on link").'
+    },
+    subject: {
+      type: 'string',
+      description: 'Academic subject or course name, e.g. "Operating Systems", "Mathematics" (optional, for ASSIGNMENT or EXAM).'
+    },
+    companyName: {
+      type: 'string',
+      description: 'Name of the hiring company, e.g. "TCS", "Amazon" (optional, for PLACEMENT).'
+    },
+    role: {
+      type: 'string',
+      description: 'Job role/designation, e.g. "Software Development Engineer" (optional, for PLACEMENT).'
+    },
+    package: {
+      type: 'string',
+      description: 'Compensation package details, e.g. "8 LPA" or "25k/month" (optional, for PLACEMENT).'
+    },
+    location: {
+      type: 'string',
+      description: 'Job location, e.g. "Bangalore", "Remote" (optional, for PLACEMENT).'
+    },
+    eligibilityText: {
+      type: 'string',
+      description: 'Hiring/eligibility criteria description, e.g. "B.Tech CSE with CGPA >= 7.0" (optional, for PLACEMENT).'
     }
   },
   required: ['title', 'category', 'summary', 'deadlineISO']
@@ -45,6 +69,12 @@ export interface ExtractedAIResponse {
   time?: string;
   deadlineISO: string;
   actionRequired?: string;
+  subject?: string;
+  companyName?: string;
+  role?: string;
+  package?: string;
+  location?: string;
+  eligibilityText?: string;
 }
 
 /**

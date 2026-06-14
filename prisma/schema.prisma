@@ -38,6 +38,11 @@ model User {
   items         ExtractedItem[]
   preferences   UserPreferences?
   notifications Notification[]
+  assignments   Assignment[]
+  assignmentReminders AssignmentReminder[]
+  placements    Placement[]
+  applications  PlacementApplication[]
+  calendarEvents AcademicCalendarEvent[]
 }
 
 model Upload {
@@ -100,4 +105,97 @@ model Reminder {
   isTriggered     Boolean       @default(false)
   isDismissed     Boolean       @default(false)
   createdAt       DateTime      @default(now())
+}
+
+model Assignment {
+  id              String        @id @default(auto()) @map("_id") @db.ObjectId
+  userId          String?       @db.ObjectId
+  user            User?         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title           String
+  subject         String
+  description     String
+  dueDate         DateTime
+  priority        String        // "High" | "Medium" | "Low"
+  status          String        @default("Pending") // "Pending" | "In Progress" | "Completed" | "Overdue"
+  sourceType      String
+  sourceReference String?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  reminders       AssignmentReminder[]
+
+  @@index([userId])
+  @@index([dueDate])
+  @@index([status])
+}
+
+model AssignmentReminder {
+  id             String     @id @default(auto()) @map("_id") @db.ObjectId
+  userId         String?    @db.ObjectId
+  user           User?      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  assignmentId   String     @db.ObjectId
+  assignment     Assignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+  reminderType   String     // "1 Day Before" | "2 Days Before" | "3 Days Before" | "1 Week Before" | "Custom Date"
+  reminderDate   DateTime
+  enabled        Boolean    @default(true)
+  createdAt      DateTime   @default(now())
+
+  @@index([userId])
+  @@index([reminderDate])
+}
+
+model Placement {
+  id              String        @id @default(auto()) @map("_id") @db.ObjectId
+  userId          String?       @db.ObjectId
+  user            User?         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  companyName     String
+  role            String
+  package         String
+  deadline        DateTime
+  location        String
+  eligibilityText String
+  description     String
+  status          String        @default("Not Applied") // "Interested" | "Applied" | "Rejected" | "Selected" | "Not Applied"
+  sourceType      String
+  sourceReference String?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  applications    PlacementApplication[]
+
+  @@index([userId])
+  @@index([deadline])
+  @@index([status])
+}
+
+model PlacementApplication {
+  id             String     @id @default(auto()) @map("_id") @db.ObjectId
+  userId         String?    @db.ObjectId
+  user           User?      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  placementId    String     @unique @db.ObjectId
+  placement      Placement  @relation(fields: [placementId], references: [id], onDelete: Cascade)
+  status         String     // "Interested" | "Applied" | "Interview Scheduled" | "Rejected" | "Selected" | "Offer Received"
+  appliedAt      DateTime?
+  interviewDate  DateTime?
+  notes          String?
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+
+  @@index([userId])
+  @@index([status])
+}
+
+model AcademicCalendarEvent {
+  id             String     @id @default(auto()) @map("_id") @db.ObjectId
+  userId         String?    @db.ObjectId
+  user           User?      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  eventType      String     // "assignment" | "placement" | "exam" | "event" | "notice"
+  eventTitle     String
+  eventDate      DateTime
+  eventTime      String?
+  referenceId    String?
+  metadata       String?    // JSON string for extra info
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+
+  @@index([userId])
+  @@index([eventDate])
 }

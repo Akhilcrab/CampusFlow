@@ -14,28 +14,24 @@ export default function StatCards({ stats }: StatCardsProps) {
       title: 'Active Inbox',
       value: stats.totalActive,
       icon: BookOpen,
-      colorClass: 'text-[#1677FF]',
       description: 'Pending notifications & tasks',
     },
     {
       title: 'Assignments Due',
       value: stats.byCategory.ASSIGNMENT,
       icon: AlertCircle,
-      colorClass: 'text-[#EF4444]',
       description: 'Require immediate submissions',
     },
     {
       title: 'Upcoming Exams',
       value: stats.byCategory.EXAM,
       icon: CheckCircle2,
-      colorClass: 'text-[#F59E0B]',
       description: 'Schedules and quiz dates',
     },
     {
-      title: 'Placement Opportunities',
+      title: 'Placement Openings',
       value: stats.byCategory.PLACEMENT,
       icon: Briefcase,
-      colorClass: 'text-[#22C55E]',
       description: 'Active campus hiring windows',
     },
   ];
@@ -47,22 +43,25 @@ export default function StatCards({ stats }: StatCardsProps) {
         return (
           <div 
             key={i} 
-            className="cf-card bg-white border border-[#E5E7EB] rounded-[24px] p-8 flex flex-col items-center text-center justify-between shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.04)]"
+            className="group relative overflow-hidden rounded-[28px] border border-slate-200/80 dark:border-slate-800 bg-white/60 dark:bg-slate-900/60 p-8 flex flex-col justify-between transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:hover:shadow-[0_8px_30px_rgb(0,0,0,0.2)] backdrop-blur-md"
           >
-            <div className="w-12 h-12 rounded-full bg-slate-50 border border-slate-100 flex items-center justify-center mb-4">
-              <IconComponent className={`w-6 h-6 ${card.colorClass}`} />
+            <div className="flex items-start justify-between w-full mb-6">
+              <div className="w-10 h-10 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-100 dark:border-slate-700 flex items-center justify-center text-slate-600 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white transition-colors">
+                <IconComponent className="w-5 h-5" />
+              </div>
             </div>
-            <div>
-              <span className="text-3xl font-black text-[#111827] tracking-tight">
+            
+            <div className="flex flex-col items-start">
+              <span className="text-5xl font-bold text-slate-900 dark:text-white tracking-tight font-display mb-1.5">
                 {card.value}
               </span>
-              <h4 className="text-xs font-bold text-[#6B7280] uppercase tracking-wider mt-1.5">
+              <h4 className="text-[18px] font-bold text-slate-800 dark:text-slate-200 tracking-tight">
                 {card.title}
               </h4>
+              <p className="text-[14px] text-slate-400 dark:text-slate-500 mt-1 font-medium leading-normal">
+                {card.description}
+              </p>
             </div>
-            <p className="text-[11px] text-[#9CA3AF] mt-3 font-medium">
-              {card.description}
-            </p>
           </div>
         );
       })}

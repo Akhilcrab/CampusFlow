@@ -2,7 +2,7 @@
 
 import React, { useState, useRef } from 'react';
 import { createWorker } from 'tesseract.js';
-import { Upload, FileText, Image, Loader2, CheckCircle2, AlertCircle } from 'lucide-react';
+import { Upload, FileText, Image as ImageIcon, Loader2, CheckCircle2, AlertCircle } from 'lucide-react';
 
 import { playBellChime } from '@/lib/sound';
 
@@ -139,10 +139,10 @@ export default function FileUpload({ onItemExtracted }: FileUploadProps) {
   return (
     <div className="w-full">
       <div
-        className={`relative bg-white dark:bg-slate-900 rounded-[24px] p-8 border-dashed border-2 flex flex-col items-center justify-center text-center cursor-pointer transition-all duration-200 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.04)] ${
+        className={`relative upload-dropzone overflow-hidden rounded-[28px] p-8 border border-dashed flex flex-col items-center justify-center text-center cursor-pointer transition-all duration-300 bg-white/60 dark:bg-slate-900/60 backdrop-blur-md ${
           isDragActive 
-            ? 'border-[#1677FF] bg-blue-50/50 scale-[1.01]' 
-            : 'border-gray-200 dark:border-slate-800 hover:border-[#1677FF]/60 bg-white dark:bg-slate-900'
+            ? 'border-slate-800 dark:border-white bg-slate-50/80 dark:bg-slate-800/40 scale-[1.01]' 
+            : 'border-slate-200 dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-600'
         } ${loading ? 'pointer-events-none' : ''}`}
         onDragEnter={handleDrag}
         onDragOver={handleDrag}
@@ -160,37 +160,37 @@ export default function FileUpload({ onItemExtracted }: FileUploadProps) {
         />
 
         {loading ? (
-          <div className="flex flex-col items-center justify-center py-4">
-            <Loader2 className="w-12 h-12 text-[#1677FF] animate-spin mb-4" />
-            <p className="font-bold text-[#111827] dark:text-slate-100 text-sm">{statusText}</p>
-            <p className="text-xs text-[#6B7280] dark:text-gray-400 mt-1">Please keep this window open</p>
+          <div className="flex flex-col items-center justify-center py-6 w-full">
+            <Loader2 className="w-10 h-10 text-slate-800 dark:text-white animate-spin mb-4" />
+            <p className="font-bold text-slate-900 dark:text-white text-sm tracking-tight">{statusText}</p>
+            <p className="text-xs text-slate-450 dark:text-slate-500 mt-1 font-medium">Please keep this window open</p>
             
             {/* Custom progress bar */}
-            <div className="w-64 bg-gray-100 dark:bg-slate-850 h-2 rounded-full mt-4 overflow-hidden border border-gray-200 dark:border-slate-850">
+            <div className="w-48 bg-slate-100 dark:bg-slate-800 h-1 rounded-full mt-5 overflow-hidden">
               <div 
-                className="bg-[#1677FF] h-full rounded-full transition-all duration-300"
+                className="bg-slate-900 dark:bg-white h-full rounded-full transition-all duration-300"
                 style={{ width: `${progress}%` }}
               ></div>
             </div>
           </div>
         ) : (
-          <div className="flex flex-col items-center justify-center py-4">
-            <div className="w-16 h-16 rounded-[16px] bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 flex items-center justify-center mb-4 text-[#1677FF] transition-transform">
-              <Upload className="w-8 h-8" />
+          <div className="flex flex-col items-center justify-center py-4 w-full">
+            <div className="w-14 h-14 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 flex items-center justify-center mb-4 text-slate-700 dark:text-slate-350 transition-colors">
+              <Upload className="w-6 h-6" />
             </div>
-            <p className="font-bold text-base text-[#111827] dark:text-slate-100">
+            <p className="font-bold text-base text-slate-900 dark:text-white tracking-tight">
               Upload Screenshot or Text Log
             </p>
-            <p className="text-xs text-[#6B7280] dark:text-gray-400 mt-2 max-w-sm leading-relaxed">
-              Drag & drop files here, or click to browse. Supports WhatsApp chat <code className="text-[#1677FF] bg-blue-50 dark:bg-blue-950/30 px-1 py-0.5 rounded text-[10px] font-bold">.txt</code> exports and dashboard images.
+            <p className="text-xs text-slate-400 dark:text-slate-500 mt-2 max-w-xs leading-relaxed font-medium">
+              Drag & drop files here, or click to browse. Supports WhatsApp chat <code className="text-slate-800 dark:text-white bg-slate-100 dark:bg-slate-800 px-1 py-0.5 rounded text-[10px] font-bold">.txt</code> exports and screenshot images.
             </p>
             
-            <div className="flex items-center gap-6 mt-6 text-xs text-[#6B7280] dark:text-gray-400">
-              <span className="flex items-center gap-1.5 font-semibold">
-                <FileText className="w-4 h-4 text-[#22C55E]" /> WhatsApp Logs
+            <div className="flex items-center gap-5 mt-6 text-xs text-slate-450 dark:text-slate-500">
+              <span className="flex items-center gap-1.5 font-bold">
+                <FileText className="w-3.5 h-3.5" /> WhatsApp Logs
               </span>
-              <span className="flex items-center gap-1.5 font-semibold">
-                <Image className="w-4 h-4 text-[#F59E0B]" /> Portal Screenshots
+              <span className="flex items-center gap-1.5 font-bold">
+                <ImageIcon className="w-3.5 h-3.5" /> Portal Images
               </span>
             </div>
           </div>
@@ -199,21 +199,21 @@ export default function FileUpload({ onItemExtracted }: FileUploadProps) {
 
       {/* Status Indicators */}
       {error && (
-        <div className="mt-4 p-4 rounded-[14px] bg-red-50 border border-red-100 text-[#EF4444] flex items-start gap-3 animate-slide-up">
-          <AlertCircle className="w-5 h-5 text-[#EF4444] shrink-0 mt-0.5" />
+        <div className="mt-4 p-4 rounded-[20px] bg-red-50/50 dark:bg-red-950/10 border border-red-100/60 dark:border-red-900/30 text-red-600 dark:text-red-400 flex items-start gap-3 animate-slide-up">
+          <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
           <div>
             <p className="font-bold text-xs">Extraction Failed</p>
-            <p className="text-[11px] text-red-600 mt-0.5">{error}</p>
+            <p className="text-[11px] mt-0.5 leading-relaxed font-medium">{error}</p>
           </div>
         </div>
       )}
 
       {success && (
-        <div className="mt-4 p-4 rounded-[14px] bg-green-50 border border-green-100 text-[#22C55E] flex items-start gap-3 animate-slide-up">
-          <CheckCircle2 className="w-5 h-5 text-[#22C55E] shrink-0 mt-0.5" />
+        <div className="mt-4 p-4 rounded-[20px] bg-emerald-50/50 dark:bg-emerald-950/10 border border-emerald-100/60 dark:border-emerald-900/30 text-emerald-600 dark:text-emerald-400 flex items-start gap-3 animate-slide-up">
+          <CheckCircle2 className="w-4 h-4 shrink-0 mt-0.5" />
           <div>
             <p className="font-bold text-xs">Success</p>
-            <p className="text-[11px] text-green-600 mt-0.5">{success}</p>
+            <p className="text-[11px] mt-0.5 leading-relaxed font-medium">{success}</p>
           </div>
         </div>
       )}

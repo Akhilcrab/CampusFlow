@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { Category, Priority } from '@prisma/client';
+import { syncAllData } from '@/lib/services';
 
 // Priority sorting helper mapping
 const priorityOrder: Record<Priority, number> = {
@@ -12,6 +13,9 @@ const priorityOrder: Record<Priority, number> = {
 
 export async function GET(req: NextRequest) {
   try {
+    // Run self-healing sync
+    await syncAllData();
+
     const { searchParams } = new URL(req.url);
     const categoryFilter = searchParams.get('category');
     
