@@ -21,10 +21,10 @@ export default function Dashboard() {
   const [loading, setLoading] = useState<boolean>(true);
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
-  
+
   // Quick task list filtering state
   const [filterKey, setFilterKey] = useState<string>('all');
-  
+
   const [stats, setStats] = useState<DashboardStats>({
     totalActive: 0,
     urgentCount: 0,
@@ -69,7 +69,7 @@ export default function Dashboard() {
     try {
       const response = await fetch('/api/items');
       const result = await response.json();
-      
+
       if (response.ok && result.success) {
         setItems(result.data);
         calculateStats(result.data);
@@ -85,13 +85,13 @@ export default function Dashboard() {
   const calculateStats = (data: ExtractedItemWithReminders[]) => {
     const active = data.filter(i => !i.isCompleted);
     const completed = data.filter(i => i.isCompleted);
-    
+
     // Urgency stats using overrides if present
     const urgent = active.filter(i => {
       const priority = i.userPriority || i.priority;
       return priority === 'CRITICAL' || priority === 'HIGH';
     });
-    
+
     const byCategory = {
       ASSIGNMENT: 0,
       EXAM: 0,
@@ -117,7 +117,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     fetchItems();
-    
+
     // Read the "tab" query parameter from URL to set the active navigation view
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
@@ -145,7 +145,7 @@ export default function Dashboard() {
           calculateStats(updated);
           return updated;
         });
-        
+
         if (isCompleted) {
           playBellChime();
         }
@@ -293,10 +293,10 @@ export default function Dashboard() {
 
   return (
     <div className="w-full min-h-screen px-4 md:px-8 py-8 flex flex-col gap-10 transition-colors duration-300">
-      
+
       {/* 1. Premium Top Navigation Bar */}
       <header className="w-full max-w-7xl mx-auto bg-white/50 dark:bg-slate-900/50 border border-slate-200/80 dark:border-slate-800/80 rounded-[24px] px-6 py-4 flex items-center justify-between shadow-[0_4px_30px_rgba(0,0,0,0.02)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.15)] backdrop-blur-md transition-all select-none">
-        
+
         {/* Sleek logo branding */}
         <div className="flex items-center gap-3">
           <div className="w-7 h-7 rounded-lg bg-slate-950 dark:bg-white flex items-center justify-center text-white dark:text-slate-950 font-black text-xs font-display">
@@ -322,11 +322,10 @@ export default function Dashboard() {
                 setActiveNav(tab.key as any);
                 setFilterKey('all'); // Clear filters on tab change
               }}
-              className={`text-xs font-bold px-4 py-2 rounded-full transition-all duration-200 cursor-pointer ${
-                activeNav === tab.key
+              className={`text-xs font-bold px-4 py-2 rounded-full transition-all duration-200 cursor-pointer ${activeNav === tab.key
                   ? 'bg-slate-950 dark:bg-white text-white dark:text-slate-950 shadow-sm'
                   : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100/50 dark:hover:bg-slate-800/50'
-              }`}
+                }`}
             >
               {tab.label}
             </button>
@@ -372,11 +371,10 @@ export default function Dashboard() {
               setActiveNav(tab.key as any);
               setFilterKey('all');
             }}
-            className={`text-[10px] font-bold px-3 py-1.5 rounded-full transition-all cursor-pointer ${
-              activeNav === tab.key
+            className={`text-[10px] font-bold px-3 py-1.5 rounded-full transition-all cursor-pointer ${activeNav === tab.key
                 ? 'bg-slate-950 dark:bg-white text-white dark:text-slate-950 shadow-sm'
                 : 'text-slate-500 dark:text-slate-400'
-            }`}
+              }`}
           >
             {tab.label}
           </button>
@@ -385,7 +383,7 @@ export default function Dashboard() {
 
       {/* 2. Unified Grid Layout Container */}
       <main className="w-full max-w-7xl mx-auto flex flex-col gap-10">
-        
+
         {/* Dynamic Notification Banner */}
         {items.length > 0 && (
           <div className="w-full bg-emerald-50/60 dark:bg-emerald-950/10 border border-emerald-100/60 dark:border-emerald-900/30 rounded-[24px] p-5 flex items-center justify-between text-emerald-700 dark:text-emerald-400 shadow-[0_1px_2px_rgba(0,0,0,0.02)] backdrop-blur-sm animate-slide-up select-none">
@@ -401,7 +399,7 @@ export default function Dashboard() {
                 <span>Exam schedule updated</span>
               </div>
             </div>
-            <button 
+            <button
               onClick={() => fetchItems(true)}
               className="text-[11px] font-extrabold hover:underline flex items-center gap-1.5 cursor-pointer text-emerald-700/80 hover:text-emerald-700 dark:text-emerald-450/80 dark:hover:text-emerald-350"
             >
@@ -428,9 +426,9 @@ export default function Dashboard() {
 
             {/* QUICK ACTIONS SECTION */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full max-w-5xl mx-auto px-4 select-none">
-              
+
               {/* WhatsApp Card */}
-              <div 
+              <div
                 onClick={() => {
                   const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
                   if (fileInput) {
@@ -452,7 +450,7 @@ export default function Dashboard() {
               </div>
 
               {/* Screenshot Card */}
-              <div 
+              <div
                 onClick={() => {
                   const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
                   if (fileInput) {
@@ -475,7 +473,7 @@ export default function Dashboard() {
               </div>
 
               {/* Open Inbox Card */}
-              <div 
+              <div
                 onClick={() => {
                   setActiveNav('inbox');
                   setFilterKey('all');
@@ -494,7 +492,7 @@ export default function Dashboard() {
               </div>
 
               {/* View Placements Card */}
-              <div 
+              <div
                 onClick={() => {
                   setActiveNav('placements');
                   setFilterKey('all');
@@ -525,7 +523,7 @@ export default function Dashboard() {
         {/* 4. Split Workspace Section Grid */}
         {(activeNav === 'dashboard' || activeNav === 'inbox') ? (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start w-full">
-            
+
             {/* Left Column: Upload Center */}
             <div className="lg:col-span-1 flex flex-col gap-6 lg:sticky lg:top-8 animate-fade-in-up">
               <h2 className="text-[28px] font-bold text-slate-900 dark:text-white tracking-tight font-display">
@@ -536,13 +534,13 @@ export default function Dashboard() {
 
             {/* Right Column: Academic Inbox Feed */}
             <div className="lg:col-span-2 flex flex-col gap-6 animate-fade-in-up">
-              
+
               {/* Header controls & seed buttons */}
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200/80 dark:border-slate-800/80 pb-4">
                 <h2 className="text-[28px] font-bold text-slate-900 dark:text-white tracking-tight font-display">
                   Academic Inbox
                 </h2>
-                
+
                 <div className="flex items-center gap-2">
                   {items.length > 0 && (
                     <button
@@ -605,11 +603,10 @@ export default function Dashboard() {
                     <button
                       key={filter.key}
                       onClick={() => setFilterKey(filter.key)}
-                      className={`text-[12px] font-semibold px-4 py-1.5 rounded-full transition-all duration-200 cursor-pointer border shrink-0 ${
-                        filterKey === filter.key
+                      className={`text-[12px] font-semibold px-4 py-1.5 rounded-full transition-all duration-200 cursor-pointer border shrink-0 ${filterKey === filter.key
                           ? 'bg-slate-900 border-slate-900 text-white dark:bg-white dark:border-white dark:text-slate-900 shadow-sm'
                           : 'bg-white/60 dark:bg-slate-900/60 border-slate-200/80 dark:border-slate-800 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800'
-                      }`}
+                        }`}
                     >
                       {filter.label}
                     </button>

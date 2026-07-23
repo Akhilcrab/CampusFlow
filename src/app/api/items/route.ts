@@ -18,7 +18,7 @@ export async function GET(req: NextRequest) {
 
     const { searchParams } = new URL(req.url);
     const categoryFilter = searchParams.get('category');
-    
+
     // Fetch all items with reminders (no auth scoping)
     const items = await db.extractedItem.findMany({
       where: categoryFilter ? { category: categoryFilter as Category } : {},

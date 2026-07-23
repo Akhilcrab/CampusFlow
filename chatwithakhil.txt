@@ -1,0 +1,11 @@
+[15/06/26, 09:30:15] Akhil: Hey guys, the Web Development Lab Assignment 5 on React Hooks is now live. We need to submit the code link and PDF report by tomorrow night before 11:59 PM.
+[15/06/26, 09:32:00] Rohit: Is this individual or in groups?
+[15/06/26, 09:33:10] Akhil: Individual submission. Upload the GitHub repo link and hosted URL to Google Classroom.
+
+[15/06/26, 11:05:42] Prof. Verma (Maths): Dear Students, the Calculus Mid-Semester Quiz is scheduled for next Friday, 19th June 2026, at 9:00 AM. It will be a written exam in the Main Seminar Hall. Syllabus: Modules 1 to 3. Bring calculators.
+
+[15/06/26, 14:15:00] Sneha (CR): @all. Atlassian is hiring for the Software Engineer Intern role. Package: 25 LPA. Eligibility: B.Tech CSE/IT with CGPA >= 8.5. Register on the portal by tomorrow evening 16/06/26 5:00 PM. Link: https://atlassian.careers/jobs/intern
+
+[15/06/26, 16:45:00] Sneha (CR): The annual college hackathon "HackOverload 2026" is scheduled to start on Saturday, June 20, 2026, at 10:00 AM in the IT Lab Block. Prizes up to ₹50,000. Register your team of 3-4 by 18th June.
+
+[15/06/26, 18:00:00] HOD Office: NOTICE: Hostels will remain closed during summer vacation starting from 25/06/26. All students must vacate their rooms by 24th June 2026 5:00 PM. No extensions will be granted.

@@ -101,7 +101,16 @@ export default function FileUpload({ onItemExtracted }: FileUploadProps) {
       // Trigger the chime sound upon successful task creation action
       playBellChime();
 
-      setSuccess(`Successfully extracted: "${result.data.title}"`);
+      const count = Array.isArray(result.data) ? result.data.length : 1;
+      const firstTitle = Array.isArray(result.data) 
+        ? (result.data[0]?.title || 'Academic Items') 
+        : (result.data.title || 'Academic Item');
+
+      setSuccess(Array.isArray(result.data) 
+        ? `Successfully extracted ${count} academic items.` 
+        : `Successfully extracted: "${firstTitle}"`
+      );
+      
       onItemExtracted(result.data);
       
       setTimeout(() => {

@@ -1,0 +1,15 @@
+[14/06/26, 09:30:15] Prof. Anjali Sen: Good morning Section A. The Cloud Computing assignment is now live. Please submit the AWS Deployment project report and GitHub repository URL by 17/06/26 before 11:59 PM. Late submissions will attract a 10% penalty.
+[14/06/26, 09:32:00] Rohit: Ma'am, do we need to submit in groups or individual?
+[14/06/26, 09:33:10] Prof. Anjali Sen: Individual submissions only, Rohit.
+[14/06/26, 10:15:32] Amit: Hey guys, does anyone have the textbook pdf?
+[14/06/26, 10:17:45] Neha: Yes Amit, check the drive link pinned in the description.
+[14/06/26, 11:05:42] Prof. Verma (Maths): Dear Students, the Calculus Mid-Semester Quiz is scheduled for next Friday, 19th June 2026, at 9:00 AM. It will be a written test in the Main Seminar Hall. Syllabus: Modules 1 to 3. Bring your calculators.
+[14/06/26, 11:08:20] Varun: Sir, will there be MCQ or subjective questions?
+[14/06/26, 11:10:05] Prof. Verma (Maths): It will be subjective. Total 30 marks.
+[14/06/26, 14:15:00] CR Sneha: @all. Atlassian is hiring for the Software Engineer Intern role. Package offered is 25 LPA. Eligibility criteria is B.Tech CSE/IT with CGPA >= 8.5. Register on the portal by tomorrow evening 15/06/26 5:00 PM. Link: https://atlassian.careers/jobs/intern-in
+[14/06/26, 14:16:30] Gaurav: Thanks Sneha! Is this for 2027 batch?
+[14/06/26, 14:17:15] CR Sneha: Yes, 2027 graduating batch.
+[14/06/26, 16:45:00] CR Sneha: Hey guys, the annual college hackathon "HackOverload 2026" is scheduled to start on Saturday, June 20, 2026, at 10:00 AM in the IT Lab Block. Prizes up to ₹50,000 are up for grabs. Register your team of 3-4 by 18th June.
+[14/06/26, 16:47:12] Amit: Awesome! @Rahul let's form a team?
+[14/06/26, 16:48:00] Rahul: Count me in, Amit.
+[14/06/26, 18:00:00] HOD Office: NOTICE: Hostels will remain closed during summer vacation starting from 25/06/26. All students must vacate their rooms by 24th June 2026 5:00 PM. No extensions will be granted.
